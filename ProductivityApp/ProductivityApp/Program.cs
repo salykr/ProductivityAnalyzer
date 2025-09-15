@@ -12,25 +12,31 @@ namespace ProductivityApp
         static void Main()
         {
             // Ensure you're calling WinForms methods from the correct namespace
-            System.Windows.Forms.Application.EnableVisualStyles();  // Fully qualify the namespace
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);  // Fully qualify the namespace
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
             // Initialize ProfileService to check for profile
             ProfileService profileService = new ProfileService();
-            Profile profile = profileService.LoadProfile();
+            Profile profile = profileService.LoadProfile();  // Try to load profile\
+            //string profileInfo = $"Username: {profile.Username}\nEmail: {profile.Email}\nJob Title: {profile.JobTitle}\nTime Zone: {profile.TimeZone}";
+            //MessageBox.Show(profileInfo, "Profile Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+            // If no profile is found, show the ProfileSetupForm
             if (profile == null)
             {
-                // No profile found, show ProfileSetupForm
+                // Show ProfileSetupForm to collect profile information
                 using (var setupForm = new ProfileSetupForm())
                 {
-                    setupForm.ShowDialog();  // Show Profile Setup form as a modal
+
+                    setupForm.ShowDialog();  // Show as a modal, so it blocks until completed
                 }
-                profile = profileService.LoadProfile(); // Reload profile after setup
+
+                // After setup, reload the profile again to get the newly saved profile
+                profile = profileService.LoadProfile();
             }
 
-            // Launch main form (Form1) after profile is loaded
-            System.Windows.Forms.Application.Run(new Form1(profile));  // Fully qualify the namespace
+            // Launch Form1 with the profile data (whether new or loaded)
+            System.Windows.Forms.Application.Run(new Form1(profile));  // Pass the profile to Form1
         }
     }
 }

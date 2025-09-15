@@ -42,27 +42,12 @@ namespace ProductivityApp.App
                 TimeZone = timeZoneComboBox.SelectedItem.ToString()
             };
 
-            // Save the profile
+            // Save the profile using ProfileService
             _profileService.SaveProfile(profile);
 
             // Close the setup form
             MessageBox.Show("Profile saved!");
             this.Close();
-        }
-
-        private void saveButton_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ProfileSetupForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void jobTitleTextBox_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
