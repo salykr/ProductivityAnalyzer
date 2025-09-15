@@ -49,5 +49,20 @@ namespace ProductivityApp.App
             MessageBox.Show("Profile saved!");
             this.Close();
         }
+
+        private void saveButton_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ProfileSetupForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void jobTitleTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
