@@ -33,7 +33,6 @@ namespace ProductivityApp.App
             DisplayCompletedTasks();
         }
 
-
         private void SetupEventHandlers()
         {
             // Clear textbox text when it gets focus
@@ -279,7 +278,6 @@ namespace ProductivityApp.App
 
             try
             {
-                // Extract task name from the selected ListBox item (before the first '•')
                 string selectedText = tasksListBox.SelectedItem.ToString();
                 string taskName = selectedText.Split('•')[0].Trim();
 
@@ -295,8 +293,8 @@ namespace ProductivityApp.App
                         return;
                     }
 
-                    task.MarkCompleted();  // Mark task as completed using the Tasks class method
-                    DisplayTasks();  // Refresh task list to reflect the change
+                    _taskService.MarkTaskCompleted(task.Id);  // Mark the task as completed
+                    DisplayTasks();  // Refresh the task list to show updated status
                     DisplayCompletedTasks();  // Refresh completed tasks list
 
                     ShowTemporaryMessage($"Task '{taskName}' marked as completed!");

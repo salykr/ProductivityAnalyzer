@@ -12,7 +12,9 @@ namespace ProductivityApp.Application
 
         public ProfileService()
         {
-            _configFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProductivityAnalyzers", "profile", "config.json");
+            _configFilePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ProductivityAnalyzers", "profile", "config.json");
         }
         public Profile LoadProfile()
         {
