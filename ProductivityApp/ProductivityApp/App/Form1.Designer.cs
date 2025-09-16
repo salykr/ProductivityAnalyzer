@@ -22,6 +22,10 @@ namespace ProductivityApp.App
         private System.Windows.Forms.Label todayDateLabel;
         private System.Windows.Forms.Label todayTasksTitleLabel;
         private System.Windows.Forms.Label todayCompletedTitleLabel;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem analyticsMenuItem;
+
+
 
         // Color palette
         private readonly Color DarkNavy = ColorTranslator.FromHtml("#19183B");
@@ -56,12 +60,50 @@ namespace ProductivityApp.App
             this.addTaskButton = new System.Windows.Forms.Button();
             this.markCompletedButton = new System.Windows.Forms.Button();
             this.deleteTaskButton = new System.Windows.Forms.Button();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.analyticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 
             this.headerPanel.SuspendLayout();
             this.mainContentPanel.SuspendLayout();
             this.inputPanel.SuspendLayout();
             this.SuspendLayout();
 
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+        this.analyticsMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1000, 30);  // Adjust the height as needed
+            this.menuStrip.TabIndex = 0;
+            this.menuStrip.Text = "menuStrip";
+
+            // 
+            // analyticsMenuItem
+            // 
+            this.analyticsMenuItem.Name = "analyticsMenuItem";
+            this.analyticsMenuItem.Size = new System.Drawing.Size(70, 24);  // Adjust the width as needed
+            this.analyticsMenuItem.Text = "Analytics";
+            this.analyticsMenuItem.Click += new System.EventHandler(this.analyticsMenuItem_Click);
+
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1000, 700);
+            this.Controls.Add(this.menuStrip);  // Add MenuStrip to the form
+            this.MainMenuStrip = this.menuStrip;  // Set the menu strip as the main menu
+            this.Name = "Form1";
+            this.Text = "Task Manager Pro";
+            this.Load += new System.EventHandler(this.Form1_Load);
+
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+     
             // 
             // Form1 (Main Form) - Made wider to accommodate side-by-side layout
             // 

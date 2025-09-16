@@ -337,5 +337,12 @@ namespace ProductivityApp.App
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void analyticsMenuItem_Click(object sender, EventArgs e)
+        {
+            // Open the Daily Analytics form
+            var analyticsForm = new AnalyticsForm();
+            analyticsForm.ShowDialog(); // Open the form as a modal window
+        }
     }
 }

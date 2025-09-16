@@ -19,6 +19,7 @@
 	<ItemGroup>
 	<PackageReference Include="aSystem.Windows.Forms" Version="1.0.0" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	<PackageReference Include="WinForms.DataVisualization" Version="1.10.0" />
     <Folder Include="Persistence\" />
     <Folder Include="Resources\" />
   </ItemGroup>
