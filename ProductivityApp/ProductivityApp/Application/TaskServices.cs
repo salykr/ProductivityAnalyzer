@@ -31,7 +31,8 @@ namespace ProductivityApp.Application
             {
                 Name = t.Name,
                 CreatedAt = t.CreatedAt,
-                CompletedAt = t.CompletedAt
+                CompletedAt = t.CompletedAt,
+                 Duration = t.Duration
             }).ToList();
         }
 
@@ -64,7 +65,8 @@ namespace ProductivityApp.Application
             {
                 Name = t.Name,
                 CreatedAt = t.CreatedAt,
-                CompletedAt = t.CompletedAt
+                CompletedAt = t.CompletedAt,
+                Duration = t.Duration
             }).ToList();
         }
 

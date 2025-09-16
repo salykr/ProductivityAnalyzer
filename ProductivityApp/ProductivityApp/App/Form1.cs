@@ -10,7 +10,6 @@ namespace ProductivityApp.App
     public partial class Form1 : Form
     {
         private readonly TaskService _taskService;
-
         public Form1(Profile profile)
         {
             InitializeComponent();
@@ -19,10 +18,21 @@ namespace ProductivityApp.App
             // Set up event handlers
             SetupEventHandlers();
 
+            // Display the username before "Task Manager"
+            if (profile != null && !string.IsNullOrEmpty(profile.Username))
+            {
+                titleLabel.Text = $"{profile.Username}'s Task Manager";  // Add username before "Task Manager"
+            }
+            else
+            {
+                titleLabel.Text = "Task Manager";  // Fallback in case username is missing
+            }
+
             // Display all tasks on startup
             DisplayTasks();
             DisplayCompletedTasks();
         }
+
 
         private void SetupEventHandlers()
         {
