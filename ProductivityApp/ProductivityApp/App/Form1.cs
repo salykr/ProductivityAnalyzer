@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using ProductivityApp.Application;  // TaskService namespace
 using ProductivityApp.Domain;
@@ -14,10 +15,7 @@ namespace ProductivityApp.App
             InitializeComponent();
             _taskService = new TaskService();
 
-            // Example: Add some tasks for testing
-            _taskService.AddTask("Complete Report");
-            _taskService.AddTask("Team Meeting");
-
+            // Display all tasks on startup
             DisplayTasks();
         }
 
@@ -25,10 +23,11 @@ namespace ProductivityApp.App
         private void DisplayTasks()
         {
             tasksListBox.Items.Clear(); // Clear previous items
-            List<Tasks> tasks = _taskService.GetAllTasks();
+            List<Tasks> tasks = _taskService.GetAllTasks(); // Retrieve all tasks
             foreach (Tasks task in tasks)
             {
-                tasksListBox.Items.Add($"{task.Name} - {(task.IsCompleted ? "Completed" : "In Progress")}");
+                // Add task to ListBox with completion status and creation timestamp
+                tasksListBox.Items.Add($"{task.Name} - Created at: {task.CreatedAt:HH:mm:ss} - {(task.IsCompleted ? "Completed" : "In Progress")}");
             }
         }
 
@@ -38,8 +37,8 @@ namespace ProductivityApp.App
             string taskName = taskNameTextBox.Text;
             if (!string.IsNullOrWhiteSpace(taskName))
             {
-                _taskService.AddTask(taskName);
-                DisplayTasks();
+                _taskService.AddTask(taskName);  // Add task via TaskService
+                DisplayTasks();  // Refresh task list
             }
             else
             {
@@ -52,18 +51,25 @@ namespace ProductivityApp.App
         {
             if (tasksListBox.SelectedItem != null)
             {
+                // Extract task name from the selected ListBox item
                 string taskName = tasksListBox.SelectedItem.ToString().Split('-')[0].Trim();
+                // Find the task by name
                 Tasks task = _taskService.GetAllTasks().FirstOrDefault(t => t.Name == taskName);
                 if (task != null)
                 {
-                    _taskService.MarkAsCompleted(task.Id);
-                    DisplayTasks();
+                    _taskService.MarkAsCompleted(task.Id);  // Mark task as completed by Id
+                    DisplayTasks();  // Refresh task list to reflect the change
                 }
             }
+            else
+            {
+                MessageBox.Show("Please select a task to mark as completed.");
+            }
         }
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Add any initialization logic here
+            // Initialization logic (if needed)
         }
     }
 }

@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProductivityApp.Application
 {
@@ -19,17 +17,21 @@ namespace ProductivityApp.Application
         // Add a new task
         public void AddTask(string taskName)
         {
-            Tasks task = new Tasks(taskName); // Use the constructor to initialize the task
-            _tasks.Add(task);
+            Tasks task = new Tasks(taskName)
+            {
+                CreatedAt = DateTime.Now // Set the creation time for the task
+            };
+
+            _tasks.Add(task); // Add task to the list
         }
 
-        // Mark a task as completed
         public void MarkAsCompleted(string taskId)
         {
-            Tasks task = _tasks.FirstOrDefault(t => t.Id.ToString() == taskId);
+            Tasks task = _tasks.FirstOrDefault(t => t.Id == taskId); // Fix the comparison, use the Id directly
             if (task != null)
             {
-                task.MarkCompleted(); // Use the method to update the read-only property
+                task.MarkCompleted(); // Mark task as completed
+                task.CompletedAt = DateTime.Now; // Set the completion time for the task
             }
         }
 
@@ -37,6 +39,23 @@ namespace ProductivityApp.Application
         public List<Tasks> GetAllTasks()
         {
             return _tasks;
+        }
+
+        // Get today's tasks (created today)
+        public List<Tasks> GetTodaysTasks()
+        {
+            return _tasks.Where(t => t.CreatedAt.Date == DateTime.Today).ToList();
+        }
+
+        // Get task logs (for display purposes)
+        public List<TaskLog> GetTaskLogs()
+        {
+            return _tasks.Select(t => new TaskLog
+            {
+                Name = t.Name,
+                CreatedAt = t.CreatedAt,
+                CompletedAt = t.CompletedAt
+            }).ToList();
         }
     }
 }
