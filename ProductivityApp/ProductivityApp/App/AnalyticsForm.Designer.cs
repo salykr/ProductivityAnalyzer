@@ -296,7 +296,7 @@ namespace ProductivityApp.App
             chartArea.AxisY.TitleFont = new Font("Segoe UI", 11F, FontStyle.Bold);
             chartArea.AxisY.TitleForeColor = DarkNavy;
             chartArea.AxisY.Minimum = 0;
-            chartArea.AxisY.Maximum = 5;  // Adjust based on task count
+            //chartArea.AxisY.Maximum = 5;  // Adjust based on task count
             chartArea.AxisY.Interval = 1;
 
             this.lineChart.ChartAreas.Add(chartArea);
