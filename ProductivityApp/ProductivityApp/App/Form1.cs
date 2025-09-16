@@ -162,7 +162,7 @@ namespace ProductivityApp.App
         // Delete a selected task
         private void deleteTaskButton_Click(object sender, EventArgs e)
         {
-            if (tasksListBox.SelectedItem == null)
+            if (tasksListBox.SelectedItem == null && completedTasksListBox.SelectedItem == null)
             {
                 MessageBox.Show("Please select a task to delete.", "Task Manager",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -171,34 +171,60 @@ namespace ProductivityApp.App
 
             try
             {
-                // Extract task name from the selected ListBox item
-                string selectedText = tasksListBox.SelectedItem.ToString();
-                string taskName = selectedText.Split('•')[0].Trim();
+                string taskName = "";
 
-                // Confirm deletion
-                DialogResult result = MessageBox.Show(
-                    $"Are you sure you want to delete the task '{taskName}'?",
-                    "Confirm Deletion",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
+                // Check selected task in tasksListBox (pending tasks)
+                if (tasksListBox.SelectedItem != null)
                 {
-                    // Find the task by name
-                    Tasks task = _taskService.GetAllTasks().FirstOrDefault(t => t.Name == taskName);
+                    string selectedText = tasksListBox.SelectedItem.ToString();
+                    taskName = selectedText.Split('•')[0].Trim();
+                }
+                // Check selected task in completedTasksListBox (completed tasks)
+                else if (completedTasksListBox.SelectedItem != null)
+                {
+                    string selectedText = completedTasksListBox.SelectedItem.ToString();
+                    taskName = selectedText.Split('•')[0].Trim();
+                }
 
-                    if (task != null)
+                // Find the task by name
+                Tasks task = _taskService.GetAllTasks().FirstOrDefault(t => t.Name == taskName);
+
+                if (task != null)
+                {
+                    // Confirm deletion
+                    DialogResult result = MessageBox.Show(
+                        $"Are you sure you want to delete the task '{taskName}'?",
+                        "Confirm Deletion",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
                     {
-                        _taskService.DeleteTask(task.Id);  // Assuming you have a DeleteTask method
-                        DisplayTasks();  // Refresh task list
+                        // Remove the task from the UI lists (tasksListBox and completedTasksListBox)
+                        if (task.IsCompleted)
+                        {
+                            completedTasksListBox.Items.Remove(completedTasksListBox.SelectedItem);
+                        }
+                        else
+                        {
+                            tasksListBox.Items.Remove(tasksListBox.SelectedItem);
+                        }
+
+                        // Remove the task from the task service (task list) and save changes to JSON
+                        _taskService.DeleteTask(task.Id); // Delete from TaskService
+                        _taskService.SaveTasksForCurrentWeek(); // Update the JSON file with the new task list
+
+                        // Refresh the UI to reflect the updated task lists
+                        DisplayTasks();  // Refresh the pending tasks list
+                        DisplayCompletedTasks();  // Refresh the completed tasks list
 
                         ShowTemporaryMessage($"Task '{taskName}' deleted successfully!");
                     }
-                    else
-                    {
-                        MessageBox.Show("Task not found.", "Task Manager",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                }
+                else
+                {
+                    MessageBox.Show("Task not found.", "Task Manager",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)

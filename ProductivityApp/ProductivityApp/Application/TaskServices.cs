@@ -72,9 +72,10 @@ namespace ProductivityApp.Application
             if (task != null)
             {
                 _tasks.Remove(task);  // Remove the task from the list
-                SaveTasksForCurrentWeek();
+                SaveTasksForCurrentWeek();  // Save the updated task list to the JSON file
             }
         }
+
 
         // Mark a task as completed
         public void MarkTaskCompleted(string taskId)
