@@ -21,6 +21,7 @@ namespace ProductivityApp.App
 
             // Display all tasks on startup
             DisplayTasks();
+            DisplayCompletedTasks();
         }
 
         private void SetupEventHandlers()
@@ -149,52 +150,6 @@ namespace ProductivityApp.App
             }
         }
 
-        // Mark a task as completed with improved error handling
-        private void markCompletedButton_Click(object sender, EventArgs e)
-        {
-            if (tasksListBox.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a task to mark as completed.", "Task Manager",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            try
-            {
-                // Extract task name from the selected ListBox item (before the first '•')
-                string selectedText = tasksListBox.SelectedItem.ToString();
-                string taskName = selectedText.Split('•')[0].Trim();
-
-                // Find the task by name
-                Tasks task = _taskService.GetAllTasks().FirstOrDefault(t => t.Name == taskName);
-
-                if (task != null)
-                {
-                    if (task.IsCompleted)
-                    {
-                        MessageBox.Show("This task is already completed.", "Task Manager",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    _taskService.MarkAsCompleted(task.Id);  // Mark task as completed by Id
-                    DisplayTasks();  // Refresh task list to reflect the change
-
-                    ShowTemporaryMessage($"Task '{taskName}' marked as completed!");
-                }
-                else
-                {
-                    MessageBox.Show("Task not found.", "Task Manager",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error completing task: {ex.Message}", "Task Manager",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         // Delete a selected task
         private void deleteTaskButton_Click(object sender, EventArgs e)
         {
@@ -274,6 +229,79 @@ namespace ProductivityApp.App
             // Disable action buttons initially
             markCompletedButton.Enabled = false;
             deleteTaskButton.Enabled = false;
+
+            // Set today's date
+            todayDateLabel.Text = $"Today: {DateTime.Today:MMMM dd, yyyy}";
+        }
+
+        private void DisplayCompletedTasks()
+        {
+            completedTasksListBox.Items.Clear();  // Clear previous items
+            List<TaskLog> completedTasks = _taskService.GetCompletedTasks(); // Retrieve all completed tasks
+
+            foreach (TaskLog task in completedTasks)
+            {
+                // Format each piece of information on separate lines
+                string taskName = task.Name;
+                string startTime = task.CreatedAt.ToString("MMM dd, HH:mm");
+                string endTime = task.CompletedAt?.ToString("MMM dd, HH:mm") ?? "N/A";
+                string duration = task.Duration.ToString(@"hh\:mm\:ss");
+
+                // Add the task name
+                completedTasksListBox.Items.Add($" {taskName}");
+                // Add start and end time
+                completedTasksListBox.Items.Add($"    {startTime} → {endTime}");
+                // Add duration
+                completedTasksListBox.Items.Add($"    Duration: {duration}");
+                // Add empty line for spacing
+                completedTasksListBox.Items.Add("");
+            }
+        }
+
+        private void markCompletedButton_Click(object sender, EventArgs e)
+        {
+            if (tasksListBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a task to mark as completed.", "Task Manager",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                // Extract task name from the selected ListBox item (before the first '•')
+                string selectedText = tasksListBox.SelectedItem.ToString();
+                string taskName = selectedText.Split('•')[0].Trim();
+
+                // Find the task by name
+                Tasks task = _taskService.GetAllTasks().FirstOrDefault(t => t.Name == taskName);
+
+                if (task != null)
+                {
+                    if (task.IsCompleted)
+                    {
+                        MessageBox.Show("This task is already completed.", "Task Manager",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    task.MarkCompleted();  // Mark task as completed using the Tasks class method
+                    DisplayTasks();  // Refresh task list to reflect the change
+                    DisplayCompletedTasks();  // Refresh completed tasks list
+
+                    ShowTemporaryMessage($"Task '{taskName}' marked as completed!");
+                }
+                else
+                {
+                    MessageBox.Show("Task not found.", "Task Manager",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error completing task: {ex.Message}", "Task Manager",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

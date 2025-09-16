@@ -35,5 +35,6 @@
                     return TimeSpan.Zero;  // Return zero duration if not completed
             }
         }
+
     }
 }

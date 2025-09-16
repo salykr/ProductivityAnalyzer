@@ -25,15 +25,16 @@ namespace ProductivityApp.Application
             _tasks.Add(task); // Add task to the list
         }
 
-        public void MarkAsCompleted(string taskId)
+        public List<TaskLog> GetCompletedTasks()
         {
-            Tasks task = _tasks.FirstOrDefault(t => t.Id.ToString() == taskId); // Fix the comparison, use the Id directly
-            if (task != null)
+            return _tasks.Where(t => t.IsCompleted).Select(t => new TaskLog
             {
-                task.MarkCompleted(); // Mark task as completed
-                task.CompletedAt = DateTime.Now; // Set the completion time for the task
-            }
+                Name = t.Name,
+                CreatedAt = t.CreatedAt,
+                CompletedAt = t.CompletedAt
+            }).ToList();
         }
+
 
         // Get all tasks
         public List<Tasks> GetAllTasks()
@@ -66,5 +67,7 @@ namespace ProductivityApp.Application
                 CompletedAt = t.CompletedAt
             }).ToList();
         }
+
+
     }
 }
