@@ -124,7 +124,7 @@ namespace ProductivityApp.App
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = LightMint;
-            this.ClientSize = new System.Drawing.Size(1500, 900);  // Increase form size for more space
+            this.ClientSize = new System.Drawing.Size(1300, 900);  // Increase form size for more space
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -161,7 +161,7 @@ namespace ProductivityApp.App
             // KPI Cards Panel
             this.kpiCardsPanel.BackColor = Color.Transparent;
             this.kpiCardsPanel.Location = new System.Drawing.Point(20, 20);
-            this.kpiCardsPanel.Size = new System.Drawing.Size(1250, 250);  // Adjust the total size of KPI cards
+            this.kpiCardsPanel.Size = new System.Drawing.Size(1250, 250);  //KPI cards
 
             // Setup KPI Cards
             SetupKpiCards();
@@ -169,7 +169,7 @@ namespace ProductivityApp.App
             // Chart Panel
             this.chartPanel.BackColor = Color.White;
             this.chartPanel.Location = new System.Drawing.Point(20, 280);  // Adjust the position after card resizing
-            this.chartPanel.Size = new System.Drawing.Size(1240, 460);  // Increased size for chart panel
+            this.chartPanel.Size = new System.Drawing.Size(1240, 460);  // chart panel
             this.chartPanel.Paint += Panel_Paint;
 
             // Chart Title
@@ -217,7 +217,7 @@ namespace ProductivityApp.App
 
                 // Card setup
                 card.Card.BackColor = Color.White;
-                card.Card.Size = new System.Drawing.Size(cardWidth, 160); // Reduced card size for better fit
+                card.Card.Size = new System.Drawing.Size(cardWidth, 160);
                 card.Card.Location = new Point(i * (cardWidth + 20), 20);  // Adjust location based on card width
 
                 // Icon label (using the description label for icon)
@@ -228,19 +228,19 @@ namespace ProductivityApp.App
                 card.DescLabel.Size = new System.Drawing.Size(50, 40);
                 card.DescLabel.TextAlign = ContentAlignment.MiddleCenter;
 
-                // Value label with smaller font
-                card.ValueLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);  // Smaller font for value label
+                // Value label
+                card.ValueLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);  
                 card.ValueLabel.ForeColor = DarkNavy;
                 card.ValueLabel.Location = new System.Drawing.Point(15, 55);
-                card.ValueLabel.Size = new System.Drawing.Size(cardWidth - 30, 25);  // Adjust width to fit
+                card.ValueLabel.Size = new System.Drawing.Size(cardWidth - 30, 25); 
                 card.ValueLabel.Text = "0";
                 card.ValueLabel.TextAlign = ContentAlignment.MiddleCenter;
 
-                // Title label (with smaller font)
+                // Title label 
                 var titleLabel = new Label
                 {
                     Text = card.Title,
-                    Font = new System.Drawing.Font("Segoe UI", 9F),  // Smaller font for title
+                    Font = new System.Drawing.Font("Segoe UI", 9F),  
                     ForeColor = SlateBlue,
                     Location = new System.Drawing.Point(15, 85),
                     Size = new System.Drawing.Size(cardWidth - 30, 20),
@@ -254,8 +254,79 @@ namespace ProductivityApp.App
                 this.kpiCardsPanel.Controls.Add(card.Card);
             }
         }
-
         private void SetupChart()
+        {
+            ((System.ComponentModel.ISupportInitialize)(this.lineChart)).BeginInit();
+
+            // Chart configuration
+            this.lineChart.BackColor = Color.White;
+            this.lineChart.Location = new System.Drawing.Point(20, 60);
+            this.lineChart.Size = new System.Drawing.Size(1250, 380);  // Same width as kpiCardsPanel
+            this.lineChart.BorderSkin.SkinStyle = BorderSkinStyle.None;
+
+            // Create and configure ChartArea
+            ChartArea chartArea = new ChartArea();
+            chartArea.Name = "MainArea";
+            chartArea.BackColor = Color.White;
+            chartArea.BorderColor = Color.Transparent;
+
+            // X-Axis configuration for numeric hour values
+            chartArea.AxisX.MajorGrid.LineColor = ColorTranslator.FromHtml("#E0E0E0");
+            chartArea.AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+            chartArea.AxisX.LineColor = SlateBlue;
+            chartArea.AxisX.LabelStyle.ForeColor = DarkNavy;
+            chartArea.AxisX.LabelStyle.Font = new Font("Segoe UI", 10F);
+            chartArea.AxisX.Title = "Hour of the Day";
+            chartArea.AxisX.TitleFont = new Font("Segoe UI", 11F, FontStyle.Bold);
+            chartArea.AxisX.TitleForeColor = DarkNavy;
+            chartArea.AxisX.Interval = 1;  // Interval set to 1 hour
+            chartArea.AxisX.IsLabelAutoFit = true;  // Ensure the labels fit automatically
+
+            // Setting the x-axis to show time from 8 to 14 hours (8 AM to 2 PM)
+            chartArea.AxisX.Minimum = 0;  // Starting from 8 AM (Hour 8)
+            //chartArea.AxisX.Maximum = 23; // Maximum time of 2 PM (Hour 14)
+
+            // Y-Axis configuration
+            chartArea.AxisY.MajorGrid.LineColor = ColorTranslator.FromHtml("#E0E0E0");
+            chartArea.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+            chartArea.AxisY.LineColor = SlateBlue;
+            chartArea.AxisY.LabelStyle.ForeColor = DarkNavy;
+            chartArea.AxisY.LabelStyle.Font = new Font("Segoe UI", 10F);
+            chartArea.AxisY.Title = "Tasks Completed";
+            chartArea.AxisY.TitleFont = new Font("Segoe UI", 11F, FontStyle.Bold);
+            chartArea.AxisY.TitleForeColor = DarkNavy;
+            chartArea.AxisY.Minimum = 0;
+            chartArea.AxisY.Maximum = 5;  // Adjust based on task count
+            chartArea.AxisY.Interval = 1;
+
+            this.lineChart.ChartAreas.Add(chartArea);
+
+            // Create series
+            var series = new Series();
+            series.Name = "Completed Tasks";
+            series.ChartType = SeriesChartType.Line;
+            series.Color = LightTeal;
+            series.BorderWidth = 4;
+            series.MarkerStyle = MarkerStyle.Circle;
+            series.MarkerSize = 8;
+            series.MarkerColor = DarkNavy;
+            series.MarkerBorderColor = Color.White;
+            series.MarkerBorderWidth = 2;
+            series.IsValueShownAsLabel = true;
+            series.LabelForeColor = DarkNavy;
+            series.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+
+            this.lineChart.Series.Add(series);
+
+            // Chart styling
+            this.lineChart.BackColor = Color.White;
+            this.lineChart.BackSecondaryColor = Color.Transparent;
+            this.lineChart.BorderlineColor = Color.Transparent;
+
+            ((System.ComponentModel.ISupportInitialize)(this.lineChart)).EndInit();
+        }
+
+        private void SetupChar1t()
         {
             ((System.ComponentModel.ISupportInitialize)(this.lineChart)).BeginInit();
 
@@ -281,8 +352,8 @@ namespace ProductivityApp.App
             chartArea.AxisX.TitleFont = new Font("Segoe UI", 11F, FontStyle.Bold);
             chartArea.AxisX.TitleForeColor = DarkNavy;
             chartArea.AxisX.Interval = 1;
-            //chartArea.AxisX.Minimum = 8;
-            //chartArea.AxisX.Minimum = 
+            //chartArea.AxisX.Minimum = 00;
+            //chartArea.AxisX.Maximum = 23;
 
             // Y-Axis configuration
             chartArea.AxisY.MajorGrid.LineColor = ColorTranslator.FromHtml("#E0E0E0");

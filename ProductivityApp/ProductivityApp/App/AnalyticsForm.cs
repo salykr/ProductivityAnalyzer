@@ -69,8 +69,7 @@ namespace ProductivityApp.App
 
             try
             {
-                // Initialize hours from 8 AM to 8 PM with 0 tasks
-                for (int hour = 8; hour <= 20; hour++)
+                for (int hour = 0; hour <= 23; hour++)
                 {
                     taskCompletionByHour[hour] = 0;
                 }
@@ -81,8 +80,7 @@ namespace ProductivityApp.App
                 {
                     int hour = task.CompletedAt.Value.Hour;
 
-                    // Only count tasks completed between 8 AM and 8 PM
-                    if (hour >= 8 && hour <= 20)
+                    if (hour >= 0 && hour <= 23)
                     {
                         taskCompletionByHour[hour]++;
                     }
@@ -95,8 +93,30 @@ namespace ProductivityApp.App
 
             return taskCompletionByHour;
         }
-
         private void LoadLineChartData()
+        {
+            // Get real task completion data per hour
+            var taskCompletionByHour = GetTaskCompletionByHour();
+
+            // If no data is returned, show a message and exit
+            if (taskCompletionByHour.Count == 0)
+            {
+                MessageBox.Show("No task data available for today.");
+                return;
+            }
+
+            // Clear previous points from the chart
+            lineChart.Series["Completed Tasks"].Points.Clear();
+
+            // Add points to the chart for each hour
+            foreach (var hourData in taskCompletionByHour)
+            {
+                // Use the hour number directly (e.g., 9, 10, 11, ...)
+                lineChart.Series["Completed Tasks"].Points.AddXY(hourData.Key, hourData.Value);
+            }
+        }
+
+        private void LoadLineChartData1()
         {
             try
             {
