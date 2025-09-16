@@ -2,7 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
-
+//Purpose: This class handles the loading and saving of the user profile.
+//->either remove class or ConfigService.cs later, they do the same thing
 namespace ProductivityApp.Application
 {
     public class ProfileService
@@ -11,11 +12,8 @@ namespace ProductivityApp.Application
 
         public ProfileService()
         {
-            // Fix the path to ensure the folder name is correct
             _configFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ProductivityAnalyzers", "profile", "config.json");
         }
-
-        // Load the profile from config.json
         public Profile LoadProfile()
         {
             if (File.Exists(_configFilePath))
@@ -33,16 +31,11 @@ namespace ProductivityApp.Application
 
                 var profile = JsonConvert.DeserializeObject<Profile>(json);
 
-                // Print loaded profile data (you can remove this after debugging)
-                Console.WriteLine($"Username: {profile.Username}");
-                Console.WriteLine($"Email: {profile.Email}");
-                Console.WriteLine($"Job Title: {profile.JobTitle}");
-                Console.WriteLine($"Time Zone: {profile.TimeZone}");
-
                 return profile;
             }
             else
             {
+                //must remove this later, just for testing purposes
                 Console.WriteLine("Profile file not found!");
             }
 
@@ -61,6 +54,7 @@ namespace ProductivityApp.Application
             // Write the serialized JSON to the config file
             File.WriteAllText(_configFilePath, json);
 
+            //must remove this later, just for testing purposes
             Console.WriteLine("Profile saved successfully.");
         }
     }

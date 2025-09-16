@@ -27,7 +27,7 @@ namespace ProductivityApp.Application
 
         public void MarkAsCompleted(string taskId)
         {
-            Tasks task = _tasks.FirstOrDefault(t => t.Id == taskId); // Fix the comparison, use the Id directly
+            Tasks task = _tasks.FirstOrDefault(t => t.Id.ToString() == taskId); // Fix the comparison, use the Id directly
             if (task != null)
             {
                 task.MarkCompleted(); // Mark task as completed
@@ -45,6 +45,15 @@ namespace ProductivityApp.Application
         public List<Tasks> GetTodaysTasks()
         {
             return _tasks.Where(t => t.CreatedAt.Date == DateTime.Today).ToList();
+        }
+        // Delete a task by its ID
+        public void DeleteTask(string taskId)
+        {
+            var task = _tasks.FirstOrDefault(t => t.Id == taskId);
+            if (task != null)
+            {
+                _tasks.Remove(task);  // Remove the task from the list
+            }
         }
 
         // Get task logs (for display purposes)
